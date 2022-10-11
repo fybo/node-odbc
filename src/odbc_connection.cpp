@@ -1811,7 +1811,6 @@ class CallProcedureAsyncWorker : public ODBCAsyncWorker {
                 data->parameters[i]->ParameterValuePtr = new SQLWCHAR[bufferSize]();
                 data->parameters[i]->BufferLength = bufferSize;
                 break;
-
               case SQL_CHAR:
               case SQL_VARCHAR:
               case SQL_LONGVARCHAR:
@@ -3361,6 +3360,7 @@ bind_buffers
       // with block cursors, we need to bite the bullet and bind with
       // SQLBindCol.
       case SQL_WLONGVARCHAR:
+	  case SQL_LONGVARCHAR:
         column->bind_type = SQL_C_WCHAR;
         if (data->fetch_size == 1 || data->get_data_supports.block)
         {
@@ -3370,28 +3370,6 @@ bind_buffers
           column->buffer_size = character_count * sizeof(SQLWCHAR);
           data->bound_columns[i].buffer =
             new SQLWCHAR[character_count * data->fetch_size]();
-        }
-        break;
-      case SQL_LONGVARCHAR:
-        column->bind_type = SQL_C_CHAR;
-        if (data->fetch_size == 1 || data->get_data_supports.block)
-        {
-          column->is_long_data = true;
-        } else {
-          size_t character_count = column->ColumnSize * MAX_UTF8_BYTES + 1;
-          column->buffer_size = character_count * sizeof(SQLCHAR);
-          data->bound_columns[i].buffer =
-            new SQLCHAR[character_count * data->fetch_size]();
-        }
-        break;
-      case SQL_LONGVARBINARY:
-        column->bind_type = SQL_C_BINARY;
-        if (data->fetch_size == 1 || data->get_data_supports.block)
-        {
-          column->is_long_data = true;
-        } else {
-          column->buffer_size = (column->ColumnSize) * sizeof(SQLCHAR);
-          data->bound_columns[i].buffer = new SQLCHAR[column->buffer_size]();
         }
         break;
 
@@ -3455,6 +3433,7 @@ bind_buffers
 
       case SQL_BINARY:
       case SQL_VARBINARY:
+      case SQL_LONGVARBINARY:
       {
         column->bind_type = SQL_C_BINARY;
         // Fixes a known issue with SQL Server and (max) length fields
@@ -3471,6 +3450,8 @@ bind_buffers
 
       case SQL_WCHAR:
       case SQL_WVARCHAR:
+      case SQL_CHAR:
+      case SQL_VARCHAR:
       {
         column->bind_type = SQL_C_WCHAR;
         // Fixes a known issue with SQL Server and (max) length fields
@@ -3486,8 +3467,6 @@ bind_buffers
         break;
       }
 
-      case SQL_CHAR:
-      case SQL_VARCHAR:
       default:
       {
         column->bind_type = SQL_C_CHAR;
@@ -3694,6 +3673,7 @@ fetch_and_store
                         row[column_index].char_data + row[column_index].size;
                       break;
                     }
+                    case SQL_C_CHAR:
                     case SQL_C_WCHAR:
                     {
                       data_returned_length =
@@ -3724,7 +3704,6 @@ fetch_and_store
                         row[column_index].wchar_data + (row[column_index].size) / sizeof(SQLWCHAR);
                       break;
                     }
-                    case SQL_C_CHAR:
                     default:
                     {
                       data_returned_length =
@@ -3791,6 +3770,7 @@ fetch_and_store
                         }
                         break;
                       case SQL_C_WCHAR:
+                      case SQL_C_CHAR:
                         // SQLGetData requires space for the null-terminator
                         if (string_length_or_indicator <= buffer_free_space - (SQLLEN)sizeof(SQLWCHAR))
                         {
@@ -3798,7 +3778,6 @@ fetch_and_store
                           break_loop = true;
                         }
                         break;
-                      case SQL_C_CHAR:
                       default:
                         // SQLGetData requires space for the null-terminator
                         if (string_length_or_indicator <= buffer_free_space - (SQLLEN)sizeof(SQLCHAR))
@@ -4178,12 +4157,11 @@ Napi::Array process_data_for_napi(Napi::Env env, StatementData *data, Napi::Arra
           case SQL_WCHAR :
           case SQL_WVARCHAR :
           case SQL_WLONGVARCHAR :
-            value = Napi::String::New(env, (const char16_t*)storedRow[j].wchar_data, storedRow[j].size / sizeof(SQLWCHAR));
-            break;
-          // Napi::String (char)
           case SQL_CHAR :
           case SQL_VARCHAR :
           case SQL_LONGVARCHAR :
+            value = Napi::String::New(env, (const char16_t*)storedRow[j].wchar_data, storedRow[j].size / sizeof(SQLWCHAR));
+            break;
           default:
             value = Napi::String::New(env, (const char*)storedRow[j].char_data, storedRow[j].size);
             break;
