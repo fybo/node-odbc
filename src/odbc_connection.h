@@ -20,6 +20,8 @@
 #define _SRC_ODBC_CONNECTION_H
 
 #include <napi.h>
+#include <string>
+#include <codecvt>
 
 class ODBCConnection : public Napi::ObjectWrap<ODBCConnection> {
 

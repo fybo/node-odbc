@@ -35,8 +35,10 @@
   },
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build",
-    "build": "node-pre-gyp build",
-    "test": "mocha --slow 5000 --timeout 30000"
+    "test": "mocha --slow 5000 --timeout 30000",
+    "build": "node-pre-gyp rebuild --msvs_version=2017 --build-from-source --update-binary",
+    "build-dev": "node-pre-gyp rebuild --msvs_version=2017 --build-from-source --update-binary --debug",
+    "start": "node index.js"
   },
   "dependencies": {
     "@mapbox/node-pre-gyp": "^1.0.5",
@@ -56,8 +58,6 @@
     "module_path": "./lib/bindings/napi-v{napi_build_version}",
     "host": "https://github.com/markdirish/node-odbc/releases/download/v{version}",
     "package_name": "{name}-v{version}-{platform}-{arch}-napi-v{napi_build_version}.tar.gz",
-    "napi_versions": [
-      6
-    ]
+    "napi_versions": [6]
   }
 }
