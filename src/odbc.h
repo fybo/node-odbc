@@ -327,7 +327,7 @@ class ODBC {
     static void StoreBindValues(Napi::Array *values, Parameter **parameters);
 
     static SQLRETURN DescribeParameters(SQLHSTMT hstmt, Parameter **parameters, SQLSMALLINT parameterCount);
-    static SQLRETURN  BindParameters(SQLHSTMT hstmt, Parameter **parameters, SQLSMALLINT parameterCount);
+    static SQLRETURN BindParameters(SQLHSTMT hstmt, Parameter **parameters, SQLSMALLINT parameterCount);
     static Napi::Array ParametersToArray(Napi::Env env, StatementData *data);
 
     void Free();
