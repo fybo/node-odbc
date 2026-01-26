@@ -35,6 +35,38 @@ const char* RETURN         = "return";
 const char* COUNT          = "count";
 const char* COLUMNS        = "columns";
 
+/*
+Code numbers for ODBC datatypes :
+ - char : 1 
+ - decimal : 3 
+ - double precision : 8
+ - float : 6
+ - integer : 4
+ - numeric : 2
+ - real : 7
+ - smallint : 5
+ - varchar : 12
+ - wchar : -8
+ - wvarchar : -9
+ - wlongvarchar : -10
+
+Code numbers for extended datatypes :
+ - bigint : -5
+ - binary (bit datatype) : -2
+ - bit : -7
+ - date : 9
+ - java.lang.Object : 1111
+ - long univarchar : -10
+ - long varbinary : -4
+ - long varchar : -1
+ - time : 10
+ - timestamp : 11
+ - tinyint : -6
+ - unichar : -8
+ - univarchar : -9
+ - varbinary (bit-varying datatype) : -3
+*/
+
 Napi::FunctionReference ODBCConnection::constructor;
 
 Napi::Object ODBCConnection::Init(Napi::Env env, Napi::Object exports) {

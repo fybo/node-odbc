@@ -1,89 +1,69 @@
 {
-  'targets' : [
+  "variables": {
+    "module_name": "odbc",
+    "module_path": "build/Release"
+  },
+  "targets": [
     {
-      'target_name' : 'odbc',
-      'sources' : [
-        'src/odbc.cpp',
-        'src/odbc_connection.cpp',
-        'src/odbc_statement.cpp',
-        'src/odbc_cursor.cpp',
-        'src/dynodbc.cpp'
+      "target_name": "odbc",
+      "sources": [
+        "src/odbc.cpp",
+        "src/odbc_connection.cpp",
+        "src/odbc_statement.cpp",
+        "src/odbc_cursor.cpp",
+        "src/dynodbc.cpp"
       ],
-      'cflags' : ['-Wall', '-Wextra', '-Wno-unused-parameter', '-DNAPI_DISABLE_CPP_EXCEPTIONS'],
-      'include_dirs': [
-        '<!@(node -p "require(\'node-addon-api\').include")'
+      "cflags": ["-Wall", "-Wextra", "-Wno-unused-parameter", "-DNAPI_DISABLE_CPP_EXCEPTIONS"],
+      "include_dirs": [
+        "<!@(node -p \"require('node-addon-api').include\")"
       ],
-      'defines' : [
-        'NAPI_EXPERIMENTAL',
-        'NAPI_VERSION=<(napi_build_version)'
+      "defines": [
+        "NAPI_EXPERIMENTAL",
+        "NAPI_VERSION=<(napi_build_version)",
+        "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING"
       ],
-      'conditions' : [
-        [ 'OS == "linux"', {
-          'libraries' : [
-            '-lodbc'
-          ],
-          'cflags' : [
-            '-g'
-          ]
+      "conditions": [
+        [ "OS == \"linux\"", {
+          "libraries": [ "-lodbc" ],
+          "cflags": [ "-g" ]
         }],
-        [ 'OS == "mac"', {
-          'conditions': [
-            [ 'target_arch=="arm64"', {
-              'include_dirs': [
-                '/opt/homebrew/include'
-              ],  
-              'libraries' : [
-                '-L/opt/homebrew/lib',
-                '-lodbc'
-              ],  
-            }], ['target_arch=="x64"', {
-              'include_dirs': [
-                '/usr/local/include',
-              ],  
-              'libraries' : [
-                '-L/usr/local/lib',
-                '-lodbc'
-              ],
+        [ "OS == \"mac\"", {
+          "conditions": [
+            [ "target_arch==\"arm64\"", {
+              "include_dirs": [ "/opt/homebrew/include" ],
+              "libraries": [ "-L/opt/homebrew/lib", "-lodbc" ]
             }],
+            [ "target_arch==\"x64\"", {
+              "include_dirs": [ "/usr/local/include" ],
+              "libraries": [ "-L/usr/local/lib", "-lodbc" ]
+            }]
           ],
-          'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS', 'NAPI_EXPERIMENTAL' ]
+          "defines": [ "NAPI_DISABLE_CPP_EXCEPTIONS", "NAPI_EXPERIMENTAL" ]
         }],
-        [ 'OS == "freebsd"', {
-          'include_dirs': [
-            '/usr/local/include'
-          ],
-          'libraries' : [
-            '-L/usr/local/lib',
-            '-lodbc'
-          ],
-          'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS', 'NAPI_EXPERIMENTAL' ]
+        [ "OS == \"freebsd\"", {
+          "include_dirs": [ "/usr/local/include" ],
+          "libraries": [ "-L/usr/local/lib", "-lodbc" ],
+          "defines": [ "NAPI_DISABLE_CPP_EXCEPTIONS", "NAPI_EXPERIMENTAL",]
         }],
-        [ 'OS=="win"', {
-          'sources' : [
-            'src/strptime.c',
-            'src/odbc.cpp'
-          ],
-          'libraries' : [
-            '-lodbccp32.lib'
-          ],
-          'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS', 'NAPI_EXPERIMENTAL', 'UNICODE' ]
+        [ "OS==\"win\"", {
+          "sources": [ "src/strptime.c", "src/odbc.cpp" ],
+          "libraries": [ "-lodbccp32.lib" ],
+          "defines": [ "NAPI_DISABLE_CPP_EXCEPTIONS", "NAPI_EXPERIMENTAL", "UNICODE" ]
         }],
-        [ 'OS=="aix"', {
-          'variables': {
-            'os_name': '<!(uname -s)',
+        [ "OS==\"aix\"", {
+          "variables": {
+            "os_name": "<!(uname -s)"
           },
-          'conditions': [
-             [ '"<(os_name)"=="OS400"', {
-               'ldflags': [
-                  '-Wl,-brtl,-blibpath:/QOpenSys/pkgs/lib,-lodbc'
-                ],
-                'cflags' : ['-std=c++0x', '-DNAPI_DISABLE_CPP_EXCEPTIONS', '-Wall', '-Wextra', '-Wno-unused-parameter', '-I/QOpenSys/usr/include', '-I/QOpenSys/pkgs/include']
-             }]
+          "conditions": [
+            [ "\"<(os_name)\"==\"OS400\"", {
+              "ldflags": [ "-Wl,-brtl,-blibpath:/QOpenSys/pkgs/lib,-lodbc" ],
+              "cflags": [ "-std=c++0x", "-DNAPI_DISABLE_CPP_EXCEPTIONS", "-Wall", "-Wextra", "-Wno-unused-parameter", "-I/QOpenSys/usr/include", "-I/QOpenSys/pkgs/include" ]
+            }]
           ]
         }],
-        [ 'OS=="os400"', {
-          'ldflags': ['-Wl,-blibpath:/QOpenSys/pkgs/lib', '-lodbc'],
-          'cflags' : ['-std=c++0x', '-DNAPI_DISABLE_CPP_EXCEPTIONS', '-Wall', '-Wextra', '-Wno-unused-parameter', '-I/QOpenSys/usr/include', '-I/QOpenSys/pkgs/include']
+        [ "OS==\"os400\"", {
+          "ldflags": [ "-Wl,-blibpath:/QOpenSys/pkgs/lib", "-lodbc" ],
+          "cflags": [ "-std=c++0x", "-DNAPI_DISABLE_CPP_EXCEPTIONS", "-Wall", "-Wextra", "-Wno-unused-parameter", "-I/QOpenSys/usr/include", "-I/QOpenSys/pkgs/include" ]
         }]
       ]
     },

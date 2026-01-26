@@ -1,6 +1,6 @@
 const odbc = require('./lib/odbc');
 
-const dsn = 'DSN=Dev_Gateworks';
+const dsn = 'DSN=Dev_GateworksV2';
 
 const run = async () => {
     const pool = await odbc.pool({
@@ -15,25 +15,29 @@ const run = async () => {
 
     await pool.connect();
 
-    console.log("---- Test 1 ----")
+    console.log('---- Test 1 ----');
     const requestQuery = `
-    SELECT
-        DateSortie, Code_article, Quantite, Motif, cast(Observations as VARCHAR(100)) as Observations, CdeNum, Client, CodeColoris, CodeArtCodeColoris, numSortie,
-        cast(PrixSortiePMP as DOUBLE PRECISION) as PrixSortiePMP, cast(PrixSortiePxAchat as DOUBLE PRECISION) as PrixSortiePxAchat, CrééPar, Crééle
-    FROM
-        sortiestock
-    LIMIT 5
-`
+        select
+            SPLIT_PART(cc.CdeNum, '-', 1),
+            cc.CdeNum as Repere, 
+            cc.Reference
+        from commandesclients cc
+        where cc.creele > '20230101' and SPLIT_PART(cc.CdeNum, '-', 1) != cc.CdeNum and SPLIT_PART(cc.CdeNum, '-', 2) = '1'
+        and SPLIT_PART(
+            cc.CdeNum, '-', 1) in (select SPLIT_PART(cc.CdeNum, '-', 1) from commandesclients cc 
+            where cc.creele > '20230101' and SPLIT_PART(cc.CdeNum, '-', 1) = cc.CdeNum
+        )
+    `;
     const result = await pool.query(requestQuery);
-    console.log(result)
+    console.log(result);
 
-    /*console.log('---- Test 2 ----');
+    console.log('---- Test 2 ----');
 
     const requestQuery2 = `
-        select * from utilisateurs limit 3
+        select * from utilisateurs limit 20
     `;
     const result2 = await pool.query(requestQuery2);
-    console.log(result2);*/
+    console.log(result2);
 };
 
 run();

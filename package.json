@@ -2,15 +2,15 @@
   "name": "odbc",
   "description": "unixodbc bindings for node",
   "version": "2.4.7",
-  "homepage": "http://github.com/markdirish/node-odbc/",
+  "homepage": "https://github.com/fybo/node-odbc/",
   "main": "lib/odbc.js",
   "types": "lib/odbc.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/markdirish/node-odbc.git"
+    "url": "git://github.com/fybo/node-odbc.git"
   },
   "bugs": {
-    "url": "https://github.com/markdirish/node-odbc/issues"
+    "url": "https://github.com/fybo/node-odbc/issues"
   },
   "contributors": [
     {
@@ -41,9 +41,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@mapbox/node-pre-gyp": "^1.0.5",
+    "@mapbox/node-pre-gyp": "2.0.0",
     "async": "^3.0.1",
-    "node-addon-api": "^3.0.2"
+    "node-addon-api": "8.3.1"
   },
   "gypfile": true,
   "devDependencies": {
@@ -56,8 +56,8 @@
   "binary": {
     "module_name": "odbc",
     "module_path": "./lib/bindings/napi-v{napi_build_version}",
-    "host": "https://github.com/markdirish/node-odbc/releases/download/v{version}",
+    "host": "https://github.com/fybo/node-odbc/releases/download/v{version}",
     "package_name": "{name}-v{version}-{platform}-{arch}-napi-v{napi_build_version}.tar.gz",
-    "napi_versions": [6]
+    "napi_versions": [9]
   }
 }
